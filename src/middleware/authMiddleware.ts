@@ -18,12 +18,15 @@ export async function authMiddleware(
   const token = header.split(" ")[1];
   try {
     const payload = jwt.verify(token, jwtSecret);
+
     const user = await prisma.users.findUnique({
       where: { id: payload.userId },
     });
+
     if (!user) {
       return res.status(401).json({ error: "invalid token" });
     }
+
     req.user = user;
     next();
   } catch (error) {
