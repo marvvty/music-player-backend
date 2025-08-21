@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../index.js";
 
-const prisma = PrismaClient;
 const jwtSecret = process.env.JWT_SECRET || "supersecretjwt";
 
 export async function authMiddleware(
@@ -10,7 +9,7 @@ export async function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const header = req.headers["authorization"];
+  const header = req.headers["Authorization"];
   if (!header) {
     return res.status(401).json({ error: "No token?" });
   }

@@ -1,8 +1,5 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import { AuthService } from "../services/authService.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config({ path: "../.env" });

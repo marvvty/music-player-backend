@@ -1,10 +1,10 @@
 export interface RegisterDto {
-  user: string;
+  user_name: string;
   password: string;
 }
 
 export interface LoginDto {
-  user: string;
+  user_name: string;
   password: string;
 }
 

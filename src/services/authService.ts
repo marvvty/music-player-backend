@@ -1,35 +1,33 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../index.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { LoginDto, RegisterDto } from "../models/authDto";
 
 export class AuthService {
-  private prisma: PrismaClient;
   private jwtSecret: string;
 
   constructor() {
     dotenv.config({ path: "../.env" });
     this.jwtSecret = process.env.JWT_SECRET || "supersecretjwt";
-    this.prisma = new PrismaClient();
   }
 
   async register(data: RegisterDto) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    const user = await this.prisma.users.create({
+    const user = await prisma.users.create({
       data: {
-        user: data.user,
+        user_name: data.user_name,
         password: hashedPassword,
       },
     });
 
-    return { id: user.id, user: user.user };
+    return { id: user.id, user: user.user_name };
   }
 
   async login(data: LoginDto) {
-    const userData = await this.prisma.users.findUnique({
-      where: { user: data.user },
+    const userData = await prisma.users.findUnique({
+      where: { user_name: data.user_name },
     });
 
     if (!userData) {
@@ -53,7 +51,7 @@ export class AuthService {
   }
 
   async me(userId: number) {
-    const user = await this.prisma.users.findUnique({
+    const user = await prisma.users.findUnique({
       where: { id: userId },
     });
 
@@ -61,6 +59,6 @@ export class AuthService {
       throw new Error("User not found");
     }
 
-    return { id: user.id, user: user.user };
+    return { id: user.id, user: user.user_name };
   }
 }

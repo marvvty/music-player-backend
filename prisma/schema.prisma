@@ -46,7 +46,7 @@ model roles {
 
 model users {
   id         Int         @id @default(autoincrement())
-  user_name  String      @db.VarChar(50)
+  user_name  String      @db.VarChar(50) @unique
   password   String      @db.VarChar(255)
   created_at DateTime?   @default(now()) @db.Timestamptz(6)
   is_active  Boolean?    @default(true)
