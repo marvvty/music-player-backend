@@ -1,7 +1,7 @@
 import express from "express";
 import authRoutes from "./routes/authRoute.js";
 import musicRoutes from "./routes/musicRoute.js";
-import { PrismaClient } from "./generated/prisma/index.js";
+import { PrismaClient } from "../generated/prisma/index.js";
 import dotenv from "dotenv";
 
 dotenv.config({ path: "./.env" });

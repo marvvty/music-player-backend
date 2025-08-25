@@ -10,7 +10,7 @@ export async function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const header = req.headers["Authorization"];
+  const header = req.headers["authorization"];
   if (!header) {
     return res.status(401).json({ error: "No token?" });
   }
@@ -25,9 +25,11 @@ export async function authMiddleware(
       return res.status(401).json({ error: "invalid token" });
     }
 
-    req.user = user;
+    req.user_id = user.id;
+
     next();
   } catch (error) {
     console.error("Authentication error:", error);
+    return res.status(401).json({ error: "Invalid token" });
   }
 }

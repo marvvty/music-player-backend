@@ -1,26 +1,58 @@
 import { prisma } from "../index.js";
-import { CreateDto, UpdateDto } from "../models/musicDto.js";
+import { CreateMusicDto, UpdateDto } from "../models/musicDto.js";
 
 export class MusicRepository {
-  create(data: CreateDto) {
-    return prisma.music.create({ data });
+  async create(data: CreateMusicDto, userId: number) {
+    return await prisma.music.create({
+      data: {
+        title: data.title,
+        artist: data.artist,
+        duration: data.duration,
+        source_type: data.source_type,
+        url: data.url,
+        users: { connect: { id: userId } },
+      },
+    });
   }
 
-  findById(id: number) {
-    return prisma.music.findUnique({
+  async findById(id: number) {
+    return await prisma.music.findUnique({
       where: { id },
     });
   }
 
-  findAllByUser(user_id: number) {
-    return prisma.music.findMany({ where: { user_id } });
+  async findAllByUser(user_id: number) {
+    return await prisma.music.findMany({
+      where: { user_id },
+      orderBy: { created_at: "desc" },
+    });
   }
 
-  update(id: number, data: UpdateDto) {
-    return prisma.music.update({ where: { id }, data });
+  async findAll() {
+    return await prisma.music.findMany({
+      orderBy: { created_at: "desc" },
+    });
   }
 
-  delete(id: number) {
-    return prisma.music.delete({ where: { id } });
+  async update(id: number, data: UpdateDto, userId: number) {
+    return await prisma.music.updateMany({
+      where: { id, user_id: userId },
+      data,
+    });
+  }
+
+  async delete(id: number) {
+    return await prisma.music.deleteMany({ where: { id } });
+  }
+
+  async checkOwnership(id: number, userId: number) {
+    const song = await prisma.music.findFirst({
+      where: {
+        id,
+        user_id: userId,
+      },
+    });
+
+    return !!song;
   }
 }

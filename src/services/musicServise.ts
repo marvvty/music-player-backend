@@ -1,9 +1,7 @@
 import { MusicRepository } from "../repositories/musicRepository.js";
-import { Request, Response } from "express";
-import { SourceType } from "../generated/prisma/index.js";
 import {
-  CreateDto,
-  CreateMusicRequestDto,
+  CreateMusicDto,
+  MusicResponseDto,
   UpdateDto,
 } from "../models/musicDto.js";
 
@@ -14,51 +12,49 @@ export class MusicService {
     this.musicRepository = new MusicRepository();
   }
 
-  async create(data: CreateMusicRequestDto, user_id: number) {
-    return this.musicRepository.create({ ...data, user_id });
+  async create(
+    data: CreateMusicDto,
+    userId: number
+  ): Promise<MusicResponseDto> {
+    if (!data.title || !data.url) {
+      throw new Error("Title and Url required");
+    }
+
+    const music = await this.musicRepository.create(data, userId);
+
+    return music;
   }
 
-  async getById(id: number, user_id?: number) {
+  async getMusicById(id: number): Promise<MusicResponseDto | null> {
     const music = await this.musicRepository.findById(id);
+    return music;
+  }
 
-    if (!music) {
-      throw new Error("Music not found");
-    }
+  async getUserMusic(user_id: number): Promise<MusicResponseDto[]> {
+    const music = await this.musicRepository.findAllByUser(user_id);
+    return music;
+  }
 
-    if (music.user_id !== user_id) {
+  async getAllMusic(): Promise<MusicResponseDto[]> {
+    const music = await this.musicRepository.findAll();
+    return music;
+  }
+
+  async update(id: number, data: UpdateDto, user_id: number) {
+    const access = await this.musicRepository.checkOwnership(id, user_id);
+
+    if (!access) {
       throw new Error("Access denied");
     }
+    const music = await this.musicRepository.update(id, data, user_id);
 
     return music;
   }
 
-  async getAllByUser(user_id: number) {
-    return this.musicRepository.findAllByUser(user_id);
-  }
+  async delete(id: number, user_id: number) {
+    const access = await this.musicRepository.checkOwnership(id, user_id);
 
-  async update(id: number, data: UpdateDto, user_id?: number) {
-    const existingMusic = await this.musicRepository.findById(id);
-
-    if (!existingMusic) {
-      throw new Error("Music not found");
-    }
-
-    if (existingMusic.user_id !== user_id) {
-      throw new Error("Access denied");
-    }
-    const music = await this.musicRepository.update(id, data);
-
-    return music;
-  }
-
-  async delete(id: number, user_id?: number) {
-    const existingMusic = await this.musicRepository.findById(id);
-
-    if (!existingMusic) {
-      throw new Error("Music not found");
-    }
-
-    if (existingMusic.user_id !== user_id) {
+    if (!access) {
       throw new Error("Access denied");
     }
 
