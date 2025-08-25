@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { prisma } from "../index.js";
+import { AuthRepository } from "../repositories/authRepository.js";
 
 const jwtSecret = process.env.JWT_SECRET || "supersecretjwt";
+const authRepository = new AuthRepository();
 
 export async function authMiddleware(
   req: Request,
@@ -18,9 +19,7 @@ export async function authMiddleware(
   try {
     const payload = jwt.verify(token, jwtSecret);
 
-    const user = await prisma.users.findUnique({
-      where: { id: payload.userId },
-    });
+    const user = await authRepository.findById(payload.userId);
 
     if (!user) {
       return res.status(401).json({ error: "invalid token" });
