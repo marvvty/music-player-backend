@@ -94,4 +94,20 @@ router.put("/:id", playlistController.update.bind(playlistController));
  */
 router.delete("/:id", playlistController.delete.bind(playlistController));
 
+/**
+ * @swagger
+ * /playlist/remove-music:
+ *   delete:
+ *     summary: remove music from playlist
+ *     responses:
+ *       200:
+ *         description: Music removed from playlist successfully
+ *       401:
+ *         description: Unauthorized
+ */
+router.delete(
+  "/remove",
+  playlistController.deleteMusicFromPlaylist.bind(playlistController)
+);
+
 export default router;

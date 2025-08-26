@@ -36,6 +36,16 @@ export class playlistService {
     return await this.playlistRepository.addMusicToPlaylist(data);
   }
 
+  async deleteMusicFromPlaylist(data: AddMusicToPlaylistDto, userId: number) {
+    const playlist = await this.playlistRepository.findById(data.playlist_id);
+
+    if (!playlist || playlist.user_id !== userId) {
+      throw new Error("Access denied");
+    }
+
+    return await this.playlistRepository.deleteMusicFromPlaylist(data);
+  }
+
   async getPlaylistById(id: number): Promise<PlaylistResponseDto | null> {
     const playlist = await this.playlistRepository.findById(id);
     return playlist;

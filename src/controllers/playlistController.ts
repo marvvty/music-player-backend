@@ -42,6 +42,25 @@ export class PlaylistController {
     }
   }
 
+  async deleteMusicFromPlaylist(req: Request, res: Response) {
+    try {
+      const data = req.body;
+      const user_id = req.user_id;
+      if (!user_id) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const playlist = await this.playlistService.deleteMusicFromPlaylist(
+        data,
+        user_id
+      );
+
+      res.status(200).json(playlist);
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
+    }
+  }
+
   async getById(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id, 10);

@@ -20,6 +20,18 @@ export class PlaylistRepository {
     });
   }
 
+  async deleteMusicFromPlaylist(data: {
+    playlist_id: number;
+    music_id: number;
+  }) {
+    return await prisma.playlist_music.deleteMany({
+      where: {
+        playlist_id: data.playlist_id,
+        music_id: data.music_id,
+      },
+    });
+  }
+
   async findById(id: number) {
     return await prisma.playlists.findUnique({
       where: { id },
