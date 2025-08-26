@@ -13,6 +13,10 @@ export class MusicController {
       const data: CreateMusicDto = req.body;
       const user_id = req.user_id;
 
+      if (!user_id) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
       const music = await this.musicService.create(data, user_id);
 
       res.status(201).json(music);
@@ -58,6 +62,11 @@ export class MusicController {
       const id = parseInt(req.params.id, 10);
       const data: UpdateDto = req.body;
       const user_id = req.user_id;
+
+      if (!user_id) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
       const music = await this.musicService.update(id, data, user_id);
 
       res.status(200).json(music);
@@ -71,6 +80,11 @@ export class MusicController {
     try {
       const id = parseInt(req.params.id, 10);
       const user_id = req.user_id;
+
+      if (!user_id) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
       await this.musicService.delete(id, user_id);
 
       res.status(204).send();

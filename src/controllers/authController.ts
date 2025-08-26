@@ -1,10 +1,6 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/authService.js";
-import dotenv from "dotenv";
 
-dotenv.config({ path: "../.env" });
-
-const jwtSecret = process.env.JWT_SECRET || "supersecretjwt";
 const authService = new AuthService();
 
 export class AuthController {
@@ -25,7 +21,6 @@ export class AuthController {
     try {
       const token = await authService.login(req.body);
 
-      res.json({ token });
       res.status(200).json({ message: "Login successful", token });
     } catch (error) {
       console.error("Login error:", error);
@@ -34,7 +29,10 @@ export class AuthController {
 
   async me(req: Request, res: Response) {
     try {
-      const user = await authService.me(req.user.id);
+      if (!req.user_id) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+      const user = await authService.me(req.user_id);
 
       res.json(user);
       res

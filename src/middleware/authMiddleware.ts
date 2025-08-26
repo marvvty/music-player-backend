@@ -5,8 +5,12 @@ import { AuthRepository } from "../repositories/authRepository.js";
 const jwtSecret = process.env.JWT_SECRET || "supersecretjwt";
 const authRepository = new AuthRepository();
 
+interface AuthRequest extends Request {
+  user_id?: number;
+}
+
 export async function authMiddleware(
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) {

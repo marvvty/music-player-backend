@@ -50,3 +50,15 @@ dist/services/authService.js
 dist/services/authService.js.map
 dist/services/musicServise.js
 dist/services/musicServise.js.map
+dist/controllers/playlistController.js
+dist/controllers/playlistController.js.map
+dist/models/playlistDto.js
+dist/models/playlistDto.js.map
+dist/repositories/playlistRepository.js
+dist/repositories/playlistRepository.js.map
+dist/routes/playlistRoute.js
+dist/routes/playlistRoute.js.map
+dist/services/playlistService.js
+dist/services/playlistService.js.map
+dist/swagger/swaggerOptions.js
+dist/swagger/swaggerOptions.js.map
