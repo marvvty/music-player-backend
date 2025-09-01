@@ -6,7 +6,6 @@ const router = Router();
 const musicController = new MusicController();
 
 router.use(authMiddleware);
-
 /**
  * @swagger
  * /music:
@@ -23,18 +22,26 @@ router.use(authMiddleware);
  *                 type: string
  *               artist:
  *                 type: string
- *               album:
+ *               duration:
+ *                 type: number
+ *               source_type:
+ *                 type: string
+ *                 enum: [URL, UPLOAD]
+ *               url:
  *                 type: string
  *             example:
  *               title: Sample Track
  *               artist: Sample Artist
- *               album: Sample Album
- *               user_id: 1
+ *               duration: 180
+ *               source_type: URL
+ *               url: https://example.com/music.mp3
  *     responses:
  *       201:
  *         description: Music track created successfully
  *       400:
  *         description: Bad request
+ *       401:
+ *         description: Unauthorized
  */
 router.post("/", musicController.create.bind(musicController));
 

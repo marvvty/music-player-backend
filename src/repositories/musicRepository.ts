@@ -6,8 +6,8 @@ export class MusicRepository {
     return await prisma.music.create({
       data: {
         title: data.title,
-        artist: data.artist,
-        duration: data.duration,
+        artist: data.artist || null,
+        duration: data.duration || null,
         source_type: data.source_type,
         url: data.url,
         users: { connect: { id: userId } },

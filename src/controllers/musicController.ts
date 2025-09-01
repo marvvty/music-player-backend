@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { MusicService } from "../services/musicServise.js";
 import { CreateMusicDto, UpdateDto } from "../models/musicDto.js";
+import path from "path";
 export class MusicController {
   private musicService: MusicService;
 
@@ -10,15 +11,14 @@ export class MusicController {
 
   async create(req: Request, res: Response) {
     try {
-      const data: CreateMusicDto = req.body;
       const user_id = req.user_id;
 
       if (!user_id) {
-        return res.status(401).json({ message: "Unauthorized" });
+        res.status(401).json({ message: "Unauthorized" });
+        return;
       }
 
-      const music = await this.musicService.create(data, user_id);
-
+      const music = await this.musicService.create(req, user_id);
       res.status(201).json(music);
     } catch (error) {
       res.status(500).json({ message: (error as Error).message });
@@ -64,7 +64,7 @@ export class MusicController {
       const user_id = req.user_id;
 
       if (!user_id) {
-        return res.status(401).json({ message: "Unauthorized" });
+        throw new Error("error");
       }
 
       const music = await this.musicService.update(id, data, user_id);
@@ -76,13 +76,25 @@ export class MusicController {
     res.status(400).json({ message: "Something got wrong" });
   }
 
+  async stream(req: Request, res: Response) {
+    const id = parseInt(req.params.id, 10);
+    const music = await this.musicService.getMusicById(id);
+
+    if (!music || !music.url) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    const filePath = path.join(process.cwd(), music.url);
+    res.sendFile(filePath);
+  }
+
   async delete(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id, 10);
       const user_id = req.user_id;
 
       if (!user_id) {
-        return res.status(401).json({ message: "Unauthorized" });
+        throw new Error("error");
       }
 
       await this.musicService.delete(id, user_id);
