@@ -32,6 +32,15 @@ export class PlaylistRepository {
     });
   }
 
+  async getMusicFromPlaylist(playlist_id: number) {
+    return await prisma.playlist_music.findMany({
+      where: { playlist_id },
+      include: {
+        music: true,
+      },
+    });
+  }
+
   async findById(id: number) {
     return await prisma.playlists.findUnique({
       where: { id },
@@ -45,9 +54,10 @@ export class PlaylistRepository {
     });
   }
 
-  async findAll() {
+  async findAll(limit?: number) {
     return await prisma.playlists.findMany({
       orderBy: { created_at: "desc" },
+      take: limit || undefined,
     });
   }
 

@@ -56,9 +56,13 @@ export class playlistService {
     return playlists;
   }
 
-  async getAllPlaylists(): Promise<PlaylistResponseDto[]> {
-    const playlists = await this.playlistRepository.findAll();
+  async getAllPlaylists(limit?): Promise<PlaylistResponseDto[]> {
+    const playlists = await this.playlistRepository.findAll(limit);
     return playlists;
+  }
+
+  async getMusicFromPlaylist(playlist_id: number) {
+    return await this.playlistRepository.getMusicFromPlaylist(playlist_id);
   }
 
   async update(id: number, data: UpdateDto, user_id: number) {

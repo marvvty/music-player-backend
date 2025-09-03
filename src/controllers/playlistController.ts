@@ -61,6 +61,18 @@ export class PlaylistController {
     }
   }
 
+  async getMusicFromPlaylist(req: Request, res: Response) {
+    try {
+      const playlist_id = parseInt(req.params.id, 10);
+      const music = await this.playlistService.getMusicFromPlaylist(
+        playlist_id
+      );
+      res.status(200).json(music);
+    } catch (error) {
+      res.status(500).json({ message: (error as Error).message });
+    }
+  }
+
   async getById(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id, 10);
@@ -85,7 +97,10 @@ export class PlaylistController {
 
   async getAll(req: Request, res: Response) {
     try {
-      const playlists = await this.playlistService.getAllPlaylists();
+      const limit = req.query.limit
+        ? parseInt(req.query.limit as string, 10)
+        : undefined;
+      const playlists = await this.playlistService.getAllPlaylists(limit);
 
       res.status(200).json(playlists);
     } catch (error) {

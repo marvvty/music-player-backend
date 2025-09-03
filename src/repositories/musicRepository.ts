@@ -28,9 +28,10 @@ export class MusicRepository {
     });
   }
 
-  async findAll() {
+  async findAll(limit?: number) {
     return await prisma.music.findMany({
       orderBy: { created_at: "desc" },
+      take: limit || undefined,
     });
   }
 

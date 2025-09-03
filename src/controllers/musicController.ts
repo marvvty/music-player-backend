@@ -49,7 +49,10 @@ export class MusicController {
 
   async getAll(req: Request, res: Response) {
     try {
-      const musicList = await this.musicService.getAllMusic();
+      const limit = req.query.limit
+        ? parseInt(req.query.limit as string, 10)
+        : undefined;
+      const musicList = await this.musicService.getAllMusic(limit);
 
       res.status(200).json(musicList);
     } catch (error) {

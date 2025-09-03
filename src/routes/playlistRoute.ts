@@ -4,7 +4,6 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = Router();
 const playlistController = new PlaylistController();
-router.use(authMiddleware);
 
 /**
  * @swagger
@@ -18,6 +17,22 @@ router.use(authMiddleware);
  *         description: Unauthorized
  */
 router.post("/", playlistController.create.bind(playlistController));
+
+/**
+ * @swagger
+ * /playlist/{id}/music:
+ *   get:
+ *     summary: Get all music from playlist
+ *     responses:
+ *       200:
+ *         description: List of music in playlist
+ *       404:
+ *         description: Playlist not found
+ */
+router.get(
+  "/:id/music",
+  playlistController.getMusicFromPlaylist.bind(playlistController)
+);
 
 /**
  * @swagger

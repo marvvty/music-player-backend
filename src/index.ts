@@ -9,23 +9,21 @@ import swaggerJsdoc from "swagger-jsdoc";
 import { swaggerOptions } from "./swagger/swaggerOptions.js";
 import path from "path";
 import cors from "cors";
+import { MusicController } from "./controllers/musicController.js";
+import { PlaylistController } from "./controllers/playlistController.js";
 
 dotenv.config({ path: "./.env" });
 const app = express();
 export const prisma = new PrismaClient();
 const specs = swaggerJsdoc(swaggerOptions);
+const musicController = new MusicController();
+const playlistController = new PlaylistController();
 
-app.use(cors());
-
-app.use(
-  cors({
-    origin: "http://127.0.0.1:5500",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+app.use(cors({ origin: "*" }));
 
 app.use(express.json());
+app.get("/music", musicController.getAll.bind(musicController));
+app.get("/playlist", playlistController.getAll.bind(playlistController));
 app.use("/auth", authRoutes);
 app.use("/music", musicRoutes);
 app.use("/playlist", playlistRoutes);

@@ -53,8 +53,8 @@ export class MusicService {
     return music;
   }
 
-  async getAllMusic(): Promise<MusicResponseDto[]> {
-    const music = await this.musicRepository.findAll();
+  async getAllMusic(limit?): Promise<MusicResponseDto[]> {
+    const music = await this.musicRepository.findAll(limit);
     return music;
   }
 
